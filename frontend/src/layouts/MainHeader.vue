@@ -1,7 +1,7 @@
 <template>
   <v-header>
     <div class="header">
-      <h1>TO DO APP 1</h1>
+      <h1>TO DO APP</h1>
       <Button @click="logout">ВЫХОД</Button>
     </div>
   </v-header>
