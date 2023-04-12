@@ -1,0 +1,49 @@
+{
+  "swagger": {
+    "outputDirectory": "./dist",
+    "entryFile": "./src/index.ts",
+    "host": "localhost:3000",
+    "basePath": "/v1"
+  },
+  "spec": {
+    "outputDirectory": "public",
+    "specVersion": 3
+  },
+  "routes": {
+    "controllerPathGlobs": [
+      "./src/routes/*.ts"
+    ]
+  },
+  "entryFile": "./src/index.ts",
+  "noImplicitAdditionalProperties": "throw-on-extras",
+  "controllerPathGlobs": [
+    "src/controllers/*.ts"
+  ],
+  "compilerOptions": {
+    "baseUrl": "./src",
+    "paths": {
+      "@/*": [
+        "./*"
+      ],
+      "@constants/*": [
+        "./constants/*"
+      ],
+      "@controllers/*": [
+        "./controllers/*"
+      ],
+      "@routes/*": [
+        "./routes/*"
+      ],
+      "@services/*": [
+        "./services/*"
+      ],
+      "@models/*": [
+        "./models/*"
+      ],
+      "@types/*": [
+        "./types/*"
+      ]
+    },
+    "outDir": "./build"
+  }
+}
