@@ -1,0 +1,75 @@
+version: '3.9'
+
+networks:
+  network:
+    driver: bridge
+
+services:
+  postgres:
+    container_name: postgres
+    hostname: postgres
+    image: postgres:15
+    user: postgres
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgrespw
+    logging:
+      options:
+        max-size: 10m
+        max-file: "3"
+    ports:
+      - '5432:5432'
+    volumes:
+      - ./backend/sql/create.sql:/docker-entrypoint-initdb.d/create_tables.sql
+      - ./pg-data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - network
+
+  frontend:
+    container_name: frontend
+    hostname: frontend
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    user: root
+    restart: on-failure
+    deploy:
+      restart_policy:
+        condition: on-failure
+    depends_on:
+      - backend
+
+  backend:
+    container_name: backend
+    hostname: backend
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      - NODE_ENV=development
+      - PORT=3001
+      - PG_HOST=postgres
+      - PG_PORT=5432
+      - PG_USER=postgres
+      - PG_PASSWORD=postgrespw
+      - PG_DB_NAME=postgres
+      - SESSION_SECRET=vkr
+      - SESSION_MAX_AGE=2592000000
+      - PASSWORD_SALT=salt_vanna_vkr
+      - SPACE_ROUTE=/api
+    ports:
+      - "3001:3001"
+    restart: on-failure
+    networks:
+      - network

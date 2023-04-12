@@ -1,16 +1,16 @@
-FROM node:alpine
+FROM node:gallium-bullseye
 
-# ARG VUE_APP_BACKEND
-# ENV VUE_APP_BACKEND ${VUE_APP_BACKEND}
+WORKDIR /vkr/front
 
-WORKDIR /frontend
+RUN npm install -g http-server
 
-COPY / ./
+COPY package*.json ./
 
-EXPOSE 3000
+RUN npm ci
 
-RUN yarn install --frozen-lockfile
-RUN yarn build
-# CMD npm run start
-# RUN npm i -g serve
-# CMD serve -s ./build
+COPY . .
+
+RUN npm run build
+
+EXPOSE 8080
+CMD http-server dist
