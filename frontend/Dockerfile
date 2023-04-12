@@ -1,8 +1,6 @@
-FROM node:gallium-bullseye
+FROM node:16-alpine
 
 WORKDIR /vkr/front
-
-RUN npm install -g http-server
 
 COPY package*.json ./
 
@@ -11,6 +9,3 @@ RUN npm ci
 COPY . .
 
 RUN npm run build
-
-EXPOSE 8080
-CMD http-server dist
