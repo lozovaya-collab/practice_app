@@ -276,7 +276,7 @@ export class Api extends HttpClient {
 
 export const apiService = new Api({
     withCredentials: true,
-    baseURL: "http://localhost/api/",
+    baseURL: "http://80.87.198.218/api/",
     headers: {
         "Content-Type": "application/json; charset=UTF-8",
         "X-Requested-With": "XMLHttpRequest",
