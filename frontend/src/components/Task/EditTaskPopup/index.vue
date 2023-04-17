@@ -1,5 +1,5 @@
 <template>
-  <Popup v-model:dialog="isOpenEditTask">
+  <Popup v-model:dialog="isDialog">
     <template v-slot:title> Редактировать задачу </template>
     <template v-slot:content>
       <ContentPopup v-bind:newTask="task" @update:newTask="task = $event" />
@@ -12,7 +12,6 @@
 </template>
 
 <script>
-import { mapState, mapMutations } from "vuex";
 import { apiService } from "../../../shared/api/swagger/swagger";
 
 import ContentPopup from "../ContentPopup";
@@ -20,8 +19,8 @@ import { Popup, Button } from "@/components/UI";
 
 export default {
   name: "EditTaskPopup",
-  props: ["taskId", "tasks", "user"],
-  emits: ["update:taskId"],
+  props: ["taskId", "tasks", "user", "isOpen"],
+  emits: ["update:taskId", "update:isOpen"],
   components: {
     ContentPopup,
     Popup,
@@ -34,9 +33,14 @@ export default {
     };
   },
   computed: {
-    ...mapState({
-      isOpenEditTask: (state) => state.tasks.isOpenEditTask,
-    }),
+    isDialog: {
+      get() {
+        return this.isOpen;
+      },
+      set(value) {
+        this.$emit("update:isOpen", value);
+      },
+    },
   },
   watch: {
     taskId(value) {
@@ -50,11 +54,9 @@ export default {
     },
   },
   methods: {
-    ...mapMutations({
-      setOpenEditTask: "tasks/SET_IS_OPEN_EDIT_TASK",
-    }),
     closePopup() {
-      this.setOpenEditTask(false);
+      this.task = null;
+      this.isDialog = false;
     },
     saveTask() {
       apiService.tasks

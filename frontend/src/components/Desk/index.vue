@@ -27,7 +27,7 @@
               users.find((item) => item.id === task.author_id).login
         "
         draggable="true"
-        v-bind:task="task"
+        :task="task"
         @deleteTask="deleteTask"
         @edit="openEditPopup"
       />
@@ -43,15 +43,19 @@
   </div>
   <CreateTaskPopup
     v-if="selectedStatus"
-    v-bind:statusId="selectedStatus"
-    v-bind:tasks="items"
+    :is-open="!!selectedStatus"
+    @update:is-open="selectedStatus = $event"
+    :statusId="selectedStatus"
+    :tasks="items"
     @update:tasks="items = $event"
   />
   <EditTaskPopup
-    :user="currUser.id"
     v-if="selectedTaskId"
-    v-bind:tasks="items"
+    :user="currUser.id"
+    :tasks="items"
     @update:tasks="items = $event"
+    :is-open="!!selectedTaskId"
+    @update:is-open="selectedTaskId = $event"
     v-model:task-id="selectedTaskId"
     @update:task-id="selectedTaskId = $event"
   />
@@ -59,7 +63,6 @@
 s
 
 <script>
-import { mapState, mapMutations } from "vuex";
 import { apiService } from "@/shared/api/swagger/swagger";
 
 // импорт компонента Task
@@ -88,16 +91,8 @@ export default {
       selectedTaskId: false,
     };
   },
-  computed: {
-    ...mapState({
-      isOpenEditTask: (state) => state.tasks.isOpenEditTask,
-    }),
-  },
   // отслеживание изменений переменной items и входного параметра tasks
   watch: {
-    isOpenEditTask() {
-      if (!this.isOpenEditTask) this.selectedTaskId = null;
-    },
     tasks: {
       handler() {
         this.items = this.tasks;
@@ -112,14 +107,9 @@ export default {
     },
   },
   methods: {
-    ...mapMutations({
-      setIsOpenCreateTask: "tasks/SET_IS_OPEN_CREATE_TASK",
-      setOpenEditTask: "tasks/SET_IS_OPEN_EDIT_TASK",
-    }),
     openCreateTask(statusId) {
       this.selectedStatus = statusId;
       this.selectedTaskId = null;
-      this.setIsOpenCreateTask(true);
     },
     onDragStart(event, task) {
       event.dataTransfer.dropEffect = "none";
@@ -163,9 +153,7 @@ export default {
     },
     openEditPopup(payload) {
       this.selectedTaskId = payload.id;
-
       this.selectedStatus = null;
-      this.setOpenEditTask(payload.isOpen);
     },
   },
   // инициализация items при отрисовке компонента Desk

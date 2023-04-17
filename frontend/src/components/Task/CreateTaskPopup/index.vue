@@ -1,5 +1,5 @@
 <template>
-  <Popup v-model:dialog="isOpenCreateTask">
+  <Popup v-model:dialog="isDialog">
     <template v-slot:title> Создать задачу </template>
     <template v-slot:content>
       <ContentPopup v-bind:newTask="task" @update:newTask="task = $event" />
@@ -12,7 +12,6 @@
 </template>
 
 <script>
-import { mapState, mapMutations } from "vuex";
 import { apiService } from "../../../shared/api/swagger/swagger";
 
 import ContentPopup from "../ContentPopup";
@@ -20,7 +19,7 @@ import { Popup, Button } from "@/components/UI";
 
 export default {
   name: "CreateTaskPopup",
-  props: ["statusId", "tasks"],
+  props: ["statusId", "tasks", "isOpen"],
   components: {
     ContentPopup,
     Popup,
@@ -32,16 +31,19 @@ export default {
     };
   },
   computed: {
-    ...mapState({
-      isOpenCreateTask: (state) => state.tasks.isOpenCreateTask,
-    }),
+    isDialog: {
+      get() {
+        return this.isOpen;
+      },
+      set(value) {
+        this.$emit("update:isOpen", value);
+      },
+    },
   },
   methods: {
-    ...mapMutations({
-      setIsOpenCreateTask: "tasks/SET_IS_OPEN_CREATE_TASK",
-    }),
     closePopup() {
-      this.setIsOpenCreateTask(false);
+      this.task = null;
+      this.isDialog = false;
     },
     saveTask() {
       apiService.tasks.Create(this.task).then(() => {

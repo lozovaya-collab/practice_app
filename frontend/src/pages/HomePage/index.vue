@@ -47,7 +47,6 @@ export default {
     };
   },
   mounted() {
-    console.log('log in')
     apiService.tasks.Get().then((res) => {
       this.tasks = res.data;
     });
