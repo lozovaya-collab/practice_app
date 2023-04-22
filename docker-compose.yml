@@ -35,7 +35,7 @@ services:
     container_name: frontend
     hostname: frontend
     build:
-      context: ./frontend-vue
+      context: ./frontend-react
       dockerfile: Dockerfile
     user: root
     restart: on-failure
