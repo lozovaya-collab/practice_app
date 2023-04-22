@@ -1,0 +1,18 @@
+@import "../../../assets/scss/main.scss";
+.combobox {
+    outline: none;
+    border: 2px solid $purple;
+    box-sizing: border-box;
+    padding: 0 10px;
+    width: 100%;
+    height: 50px;
+    background-color: $white !important;
+    border-radius: 15px;
+    &_select {
+        @include text($black);
+        width: 100%;
+        height: 100%;
+        border: none;
+        outline: none;
+    }
+}
